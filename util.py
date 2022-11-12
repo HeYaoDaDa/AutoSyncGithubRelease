@@ -46,7 +46,7 @@ def get_all_need_download_game_file_dirt(release_jsons, exist_game_files: list[s
     remove_files = set()
     for exist_file in exist_game_files:
         if exist_file not in release_jsons:
-            remove_files.add(os.path.pardir(exist_file))
+            remove_files.add(os.path.dirname(exist_file))
     return asset_tuple_list, remove_files
 
 
