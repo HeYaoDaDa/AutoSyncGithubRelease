@@ -7,7 +7,7 @@ def rm_dir(dir: str):
     files = os.listdir(dir)
     result = []
     for file in files:
-        if os.isdir(file):
+        if os.path.isdir(file):
             rm_dir(file)
         else:
             os.remove(file)
@@ -19,7 +19,7 @@ def get_path_files(path: str) -> list[str]:
         files = os.listdir(path)
         result = []
         for file in files:
-            if os.isdir(file):
+            if os.path.isdir(file):
                 result.append(get_path_files(file))
             else:
                 result.append(file)
