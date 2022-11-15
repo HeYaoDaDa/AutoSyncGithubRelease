@@ -8,14 +8,14 @@ if __name__ == '__main__':
     exist_files = get_path_files(download_dir)
     down_urls, remove_files = get_all_need_download_game_file_dirt(
         releases_json, exist_files)
+    print(f"rm dir size is {len(remove_files)}")
+    for dir in remove_files:
+        print(f"start remove dir {dir}")
+        rm_dir(dir)
     print(f"down size is {len(down_urls)}")
     pool = Pool(2)
     for i in down_urls:
         pool.apply_async(download_game_file, args=(i,))
     pool.close()
     pool.join()
-    print(f"rm dir size is {len(remove_files)}")
-    for dir in remove_files:
-        print(f"start remove dir {dir}")
-        rm_dir(dir)
     print("======>Finish<======")
