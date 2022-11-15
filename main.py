@@ -17,5 +17,5 @@ if __name__ == '__main__':
     print(f"rm dir size is {len(remove_files)}")
     for dir in remove_files:
         print(f"start remove dir {dir}")
-        rm_dir(remove_files)
+        rm_dir(dir)
     print("======>Finish<======")

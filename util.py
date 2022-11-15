@@ -1,11 +1,11 @@
 import os
 import requests
 from constant import download_dir, github_token
+from fileUtil import *
 
 
 def rm_dir(dir: str):
-    files = os.listdir(dir)
-    result = []
+    files = listdir(dir)
     for file in files:
         if os.path.isdir(file):
             rm_dir(file)
@@ -16,23 +16,27 @@ def rm_dir(dir: str):
 
 def get_path_files(path: str) -> list[str]:
     if os.path.exists(path):
-        files = os.listdir(path)
+        files = listdir(path)
         result = []
         for file in files:
             if os.path.isdir(file):
-                result.append(get_path_files(file))
+                result.extend(get_path_files(file))
             else:
                 result.append(file)
-        return files
+        return result
     else:
         return []
 
 
 def get_all_need_download_game_file_dirt(release_jsons, exist_game_files: list[str]) -> list:
+    exist_game_file_names = []
+    for exist_game_file in exist_game_files:
+        exist_game_file_names.append(os.path.basename(exist_game_file))
     asset_tuple_list = []
     release_jsons = sorted(
         release_jsons, key=lambda release: release["published_at"]
     )
+    release_files = []
     for release_json in release_jsons:
         assets = release_json["assets"]
         version = release_json["tag_name"]
@@ -40,12 +44,13 @@ def get_all_need_download_game_file_dirt(release_jsons, exist_game_files: list[s
         for asset in assets:
             url = asset["browser_download_url"]
             name = asset["name"]
+            release_files.append(name)
             size = int(asset["size"])/1024/1024
-            if is_need_upload(name, size) and name not in exist_game_files:
+            if is_need_upload(name, size) and name not in exist_game_file_names:
                 asset_tuple_list.append(url)
     remove_files = set()
     for exist_file in exist_game_files:
-        if exist_file not in release_jsons:
+        if os.path.basename(exist_file) not in release_files:
             remove_files.add(os.path.dirname(exist_file))
     return asset_tuple_list, remove_files
 
